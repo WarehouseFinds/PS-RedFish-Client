@@ -1,83 +1,17 @@
-assembly-versioning-scheme: MajorMinorPatch
-assembly-file-versioning-scheme: MajorMinorPatch
-assembly-informational-format: "{Major}.{Minor}.{Patch}.{CommitsSinceVersionSource:0000}"
-tag-prefix: '[vV]?'
-major-version-bump-message: \+semver:\s?(breaking|major)
-minor-version-bump-message: \+semver:\s?(feature|minor)
-patch-version-bump-message: \+semver:\s?(fix|patch)
-no-bump-message: \+semver:\s?(none|skip)
-tag-pre-release-weight: 60000
-commit-date-format: yyyy-MM-dd
-update-build-number: true
-semantic-version-format: Strict
-strategies:
-- Fallback
-- MergeMessage
-- TaggedCommit
+major-version-bump-message: '\s?(breaking|major|breaking\schange)'
+minor-version-bump-message: '(adds?|features?|minor)\b'
+patch-version-bump-message: '\s?(fix|patch)'
+no-bump-message: '\+semver:\s?(none|skip)'
 branches:
   main:
-    label: 'stable'
+    label: stable
     increment: Patch
-    prevent-increment:
-      of-merged-branch: false
-    track-merge-target: false
-    track-merge-message: true
     regex: ^master$|^main$
-    source-branches: []
-    is-source-branch-for: []
-    tracks-release-branches: false
-    is-release-branch: false
-    is-main-branch: true
-    pre-release-weight: 55000
-  release:
-    mode: ManualDeployment
-    label: hotfix
+  feature:
+    label: feature
+    increment: Minor
+    regex: ^features?[/-]
+  hotfix:
+    label: preview
     increment: Patch
-    prevent-increment:
-      of-merged-branch: true
-      when-branch-merged: false
-      when-current-commit-tagged: false
-    track-merge-target: false
-    track-merge-message: true
-    regex: ^releases?[\/-](?<BranchName>.+)
-    source-branches:
-    - main
-    tracks-release-branches: false
-    is-release-branch: true
-    is-main-branch: false
-    pre-release-weight: 30000
-  pull-request:
-    mode: ContinuousDelivery
-    label: PullRequest{Number}
-    increment: Inherit
-    prevent-increment:
-      of-merged-branch: true
-      when-current-commit-tagged: false
-    track-merge-message: true
-    regex: ^(pull-requests|pull|pr)[\/-](?<Number>\d*)
-    source-branches:
-    - main
-    - release
-    - feature
-    pre-release-weight: 30000
-ignore:
-  paths:
-    - ^docs\/
-    - ^.github\/
-    - ^.vscode\/
-    - ^tests?\/
-    - ^examples?\/
-mode: ContinuousDelivery
-label: '{BranchName}'
-increment: Inherit
-prevent-increment:
-  of-merged-branch: false
-  when-branch-merged: true
-  when-current-commit-tagged: true
-track-merge-target: false
-track-merge-message: true
-commit-message-incrementing: Enabled
-regex: ''
-tracks-release-branches: false
-is-release-branch: false
-is-main-branch: false
+    regex: ^hotfix(es)?[/-]|^patch?[/-]
