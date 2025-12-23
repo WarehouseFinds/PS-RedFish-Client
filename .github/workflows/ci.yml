@@ -1,0 +1,34 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build:
+    name: Build and Test
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run Build (Invoke-Build)
+        # Use PowerShell Core on all platforms
+        shell: pwsh
+        run: |
+          Set-StrictMode -Version Latest
+          # Ensure the build script is executable on Unix
+          if ($IsLinux -or $IsMacOS) { chmod +x ./build.ps1 -ErrorAction SilentlyContinue }
+          ./build.ps1 -Task Default
+
+      - name: Upload packaged artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: PSRedFishClient-package
+          path: artifacts/PSRedFishClient.zip
