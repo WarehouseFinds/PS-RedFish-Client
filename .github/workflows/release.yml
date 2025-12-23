@@ -1,5 +1,5 @@
 name: Release
-run-name: '[Id:{{ github.run_id }}, Branch:{{ github.ref_name }}] Release Workflow'
+run-name: '[Id:${{ github.run_id }}, Branch:${{ github.ref_name }}] Release Workflow'
 
 on:
   workflow_dispatch:
