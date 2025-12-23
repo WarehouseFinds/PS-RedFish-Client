@@ -12,7 +12,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [windows-latest] #[ubuntu-latest, windows-latest, macos-latest]
 
     steps:
       - name: Checkout
@@ -25,7 +25,7 @@ jobs:
           Set-StrictMode -Version Latest
           # Ensure the build script is executable on Unix
           if ($IsLinux -or $IsMacOS) { chmod +x ./build.ps1 -ErrorAction SilentlyContinue }
-          ./build.ps1 -Task Default
+          ./PSRedfishClient.Build.ps1 -Task build
 
       - name: Upload packaged artifact
         uses: actions/upload-artifact@v4
