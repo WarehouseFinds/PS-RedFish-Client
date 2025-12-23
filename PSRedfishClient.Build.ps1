@@ -175,28 +175,8 @@ task GenerateNewModuleVersion -If ($Configuration -eq 'Release') {
     }
 }
 
-# Synopsis: Generate list of functions to be exported by module
-task GenerateListOfFunctionsToExport {
-    # Set exported functions by finding functions exported by *.psm1 file via Export-ModuleMember
-    $params = @{
-        Force    = $true
-        Passthru = $true
-        Name     = (Resolve-Path (Get-ChildItem -Path $moduleSourcePath -Filter '*.psm1')).Path
-    }
-    $PowerShell = [Powershell]::Create()
-    [void]$PowerShell.AddScript(
-        {
-            Param ($Force, $Passthru, $Name)
-            $module = Import-Module -Name $Name -PassThru:$Passthru -Force:$Force
-            $module | Where-Object { $_.Path -notin $module.Scripts }
-        }
-    ).AddParameters($Params)
-    $module = $PowerShell.Invoke()
-    $Script:functionsToExport = $module.ExportedFunctions.Keys
-}
-
 # Synopsis: Update the module manifest with module version and functions to export
-task UpdateModuleManifest GenerateNewModuleVersion, GenerateListOfFunctionsToExport, {
+task UpdateModuleManifest GenerateNewModuleVersion, {
     # Update-ModuleManifest parameters
     $Params = @{
         Path              = $moduleManifestPath
