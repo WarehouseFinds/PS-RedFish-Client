@@ -6,6 +6,7 @@
     Copyright         = '(c) Warehouse Finds'
     Description       = 'A sample PowerShell script module.'
     RootModule        = ''
+    FunctionsToExport = @()
     CmdletsToExport   = @()
     VariablesToExport = @()
     AliasesToExport   = @()
