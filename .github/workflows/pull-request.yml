@@ -20,6 +20,23 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v4.2.0
+        with:
+          versionSpec: '6.5.x'
+          preferLatestVersion: true
+
+      - name: Determine Version
+        id: version_step # step id used as a reference for output values
+        uses: gittools/actions/gitversion/execute@v4.2.0
+        with:
+          configFilePath: gitversion.yml
+
+      - run: |
+          echo "SemVer (env.SemVer): ${{ steps.version_step.outputs.SemVer }}"
+        name: Display GitVersion variables (without prefix)
+
       - name: Ensure PowerShell modules (PSDepend, InvokeBuild, Pester, ModuleBuilder, PSScriptAnalyzer, InjectionHunter) are installed
         shell: pwsh
         run: |
@@ -31,13 +48,20 @@ jobs:
               Install-Module -Name $m -Scope CurrentUser -Force -AllowClobber -ErrorAction Stop
             }
           }
-
       - name: Run build via Invoke-Build
         shell: pwsh
         run: |
+          $VerbosePreference = 'Continue'
           Set-StrictMode -Version Latest
           Import-Module InvokeBuild -ErrorAction Stop
-          Invoke-Build -Configuration Debug
+          Invoke-Build -ReleaseType Release -SemanticVersion ${{ steps.version_step.outputs.SemVer }} -Task Build
+
+      #- name: Run build via Invoke-Build
+      #  shell: pwsh
+      #  run: |
+      #    Set-StrictMode -Version Latest
+      #    Import-Module InvokeBuild -ErrorAction Stop
+      #    Invoke-Build -Configuration Debug
 
       - name: Run Unit Tests via Invoke-Build
         shell: pwsh

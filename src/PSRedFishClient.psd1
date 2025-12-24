@@ -1,10 +1,10 @@
 @{
     GUID                 = 'a620849b-e411-460a-86ef-4c9e82a170ee'
-    ModuleVersion        = '0.1.0'
+    ModuleVersion        = '0.0.0'
     Author               = 'Marko Stanojevic'
-    CompanyName          = ''
+    CompanyName          = 'Warehouse Finds'
     Copyright            = '(c) Warehouse Finds'
-    Description          = 'PowerShell client helpers for Redfish APIs.'
+    Description          = 'A sample PowerShell script module.'
     RootModule           = 'PSRedfishClient.psm1'
     FunctionsToExport    = @()
     PrivateData          = @{

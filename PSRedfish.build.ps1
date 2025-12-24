@@ -113,62 +113,38 @@ task UnitTest {
     }
 }
 
-# Synopsis: Generate a new module version if creating a release build
-task GenerateNewModuleVersion -If ($ReleaseType -eq 'Release') {
+# Generate a new module version if creating a release build
+task GenerateNewModuleVersion {
     # Using the current NuGet package version from the feed as a version base when building via Azure DevOps pipeline
-
-
-    # If existing module package was found, try to install the module
-    if ($existingPackage) {
-        # Get the largest module version
-        # $currentModuleVersion = (Get-Module -Name $moduleName -ListAvailable | Measure-Object -Property 'Version' -Maximum).Maximum
-        $currentModuleVersion = New-Object -TypeName 'System.Version' -ArgumentList ($existingPackage.Version)
-
-        # Set module version base numbers
-        [int]$Major = $currentModuleVersion.Major
-        [int]$Minor = $currentModuleVersion.Minor
-        [int]$Build = $currentModuleVersion.Build
-
-        # Update the module version object
-        $Script:newModuleVersion = New-Object -TypeName 'System.Version' -ArgumentList ($Major, $Minor, $Build)
-    }
+    $Script:moduleVersion = New-Object -TypeName 'System.Version' -ArgumentList ($SemanticVersion)
 }
 
-# Synopsis: Update the module manifest with module version and functions to export
+# Update the module manifest with module version
 task UpdateModuleManifest GenerateNewModuleVersion, {
-    # Update-ModuleManifest parameters
     $Params = @{
         Path          = $moduleManifestPath
-        ModuleVersion = $newModuleVersion
+        ModuleVersion = $moduleVersion
     }
-
-    # Update the manifest file
-    Update-ModuleManifest @Params
+    [void] (Update-ModuleManifest @Params)
 }
 
-# Synopsis: Update the NuGet package specification with module version
+# Update the NuGet package specification with module version
 task UpdatePackageSpecification GenerateNewModuleVersion, {
-    # Load the specification into XML object
     $xml = New-Object -TypeName 'XML'
     $xml.Load($nuspecPath)
-
-    # Update package version
     $metadata = Select-XML -Xml $xml -XPath '//package/metadata'
-    $metadata.Node.Version = $newModuleVersion
-
-    # Save XML object back to the specification file
-    $xml.Save($nuspecPath)
+    $metadata.Node.Version = $moduleVersion
+    [void] ($xml.Save($nuspecPath))
 }
 
-# Synopsis: Build the project
-#task Build UpdateModuleManifest, UpdatePackageSpecification, {
-task Build {
+# Build the project
+task Build UpdateModuleManifest, UpdatePackageSpecification, {
     # Warning on local builds
     if ($ReleaseType -eq 'Debug') {
-        Write-Warning "Creating a debug build. Use it for test purpose only!!!"
+        Write-Warning "THIS IS A DEBUG BUILD. THE MODULE IS NOT SUITABLE FOR PRODUCTION USE."
     }
 
-    # Create versioned output folder
+    # Create build output folder
     if (-not (Test-Path $buildOutputPath)) {
         Write-Warning "Creating build output folder at '$buildOutputPath'"
         [void] (New-Item -Path $buildOutputPath -ItemType Directory)
@@ -184,7 +160,7 @@ task Clean {
     if (Test-Path $buildOutputPath) {
         Write-Warning "Removing build output folder at '$buildOutputPath'"
         $requestParam = @{
-            Path   = $buildOutputPath
+            Path    = $buildOutputPath
             Recurse = $true
             Force   = $true
         }
