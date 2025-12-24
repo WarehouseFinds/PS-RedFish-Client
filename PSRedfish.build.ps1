@@ -121,6 +121,8 @@ task GenerateNewModuleVersion {
 
 # Update the module manifest with module version
 task UpdateModuleManifest GenerateNewModuleVersion, {
+    get-command Update-ModuleManifest
+    Write-Warning (get-command Update-ModuleManifest).Version
     $Params = @{
         Path          = $moduleManifestPath
         ModuleVersion = $moduleVersion
