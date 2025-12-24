@@ -40,8 +40,8 @@ Enter-Build {
     # Setting build script variables
     $script:moduleName = 'PSRedfishClient'
     $script:moduleSourcePath = Join-Path -Path $BuildRoot -ChildPath 'src'
-    $script:testSourcePath = Join-Path -Path $BuildRoot -ChildPath 'tests'
     $script:moduleManifestPath = Join-Path -Path $moduleSourcePath -ChildPath "$moduleName.psd1"
+    $script:testSourcePath = Join-Path -Path $BuildRoot -ChildPath 'tests'
     $script:nuspecPath = Join-Path -Path $moduleSourcePath -ChildPath "$moduleName.nuspec"
     $script:buildOutputPath = Join-Path -Path $BuildRoot -ChildPath 'build'
     $script:coverageOutputPath = Join-Path -Path $buildOutputPath -ChildPath 'coverage'
@@ -85,20 +85,21 @@ task Test {
     $TestFiles = Get-ChildItem -Path $script:testSourcePath -Recurse -Include "*.Tests.*"
     
     $Config = New-PesterConfiguration @{
-        Run        = @{
+        Run          = @{
             Path = $TestFiles
             Exit = $true
         }
-        TestResult = @{
-            Enabled = $true
+        TestResult   = @{
+            Enabled      = $true
+            OutputFormat = 'NUnitXml'
+            OutputPath   = "$coverageOutputPath\testResults.xml"
+        }
+        CodeCoverage = @{
+            Enabled      = $true
+            OutputFormat = 'Cobertura'
+            OutputPath   = "$coverageOutputPath\coverage.xml"
         }
     }
-
-    # Additional parameters on Azure Pipelines agents to generate test results
-    $Timestamp = Get-date -UFormat "%Y%m%d-%H%M%S"
-    $PSVersion = $PSVersionTable.PSVersion.Major
-    $TestResultFile = "TestResults_PS$PSVersion`_$TimeStamp.xml"
-    $Config.TestResult.OutputPath = "$coverageOutputPath\$TestResultFile"
 
     # Invoke all tests
     Invoke-Pester -Configuration $Config
