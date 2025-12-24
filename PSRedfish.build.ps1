@@ -232,16 +232,15 @@ task CodeCoverage {
 
     $Config = New-PesterConfiguration @{
         Run          = @{
-            Path     = $moduleSourcePath
+            Path     = $testSourcePath
             PassThru = $true
         }
         Output       = @{
             Verbosity = 'Normal'
         }
         CodeCoverage = @{
-            Enabled               = $true
-            Path                  = $files
-            CoveragePercentTarget = 60
+            Enabled = $true
+            Path    = $files
         }
     }
 
