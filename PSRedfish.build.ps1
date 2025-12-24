@@ -97,7 +97,7 @@ task Test {
         }
         CodeCoverage = @{
             Enabled        = $true
-            Path           = $files
+            #Path           = $files
             OutputFormat   = 'Cobertura'
             OutputPath     = "$coverageOutputPath\coverage.xml"
             OutputEncoding = 'UTF8'
