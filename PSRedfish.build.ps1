@@ -82,7 +82,7 @@ task Analyze {
 
 # Synopsis: Test the project with Pester tests
 task Test {
-    $files = Get-ChildItem -Path $moduleSourcePath -Recurse -Force -Include '*.ps1' -Exclude '*.Tests.ps1', '*build.ps1'
+    #$files = Get-ChildItem -Path $moduleSourcePath -Recurse -Force -Include '*.ps1' -Exclude '*.Tests.ps1', '*build.ps1'
     
     $Config = New-PesterConfiguration @{
         Run          = @{
@@ -97,7 +97,7 @@ task Test {
         }
         CodeCoverage = @{
             Enabled        = $true
-            #Path           = $files
+            Path           = $script:moduleSourcePath
             OutputFormat   = 'Cobertura'
             OutputPath     = "$coverageOutputPath\coverage.xml"
             OutputEncoding = 'UTF8'
