@@ -38,11 +38,16 @@ Enter-Build {
     $script:moduleSourcePath = Join-Path -Path $BuildRoot -ChildPath 'src'
     $script:moduleManifestPath = Join-Path -Path $moduleSourcePath -ChildPath "$moduleName.psd1"
     $script:testSourcePath = Join-Path -Path $BuildRoot -ChildPath 'tests'
+    $script:testOutputPath = Join-Path -Path $BuildRoot -ChildPath 'test-results'
     $script:nuspecPath = Join-Path -Path $moduleSourcePath -ChildPath "$moduleName.nuspec"
     $script:buildOutputPath = Join-Path -Path $BuildRoot -ChildPath 'build'
     $script:publishSourcePath = Join-Path -Path $buildOutputPath -ChildPath $moduleName
     $script:coverageOutputPath = Join-Path -Path $BuildRoot -ChildPath 'coverage'
     $script:psScriptAnalyzerSourcePath = Join-Path -Path $BuildRoot -ChildPath './tests/SCA/PSScriptAnalyzer.Tests.ps1'
+    $script:psScriptAnalyzerOutputPath = Join-Path -Path $testOutputPath -ChildPath 'SCA'
+    $script:unitTestSourcePath = Join-Path -Path $BuildRoot -ChildPath './tests/Unit'
+    $script:unitTestOutputPath = Join-Path -Path $testOutputPath -ChildPath 'Unit'
+
 
     # Setting base module version and using it if building locally
     $script:newModuleVersion = New-Object -TypeName 'System.Version' -ArgumentList (0, 0, 1)
@@ -50,6 +55,11 @@ Enter-Build {
 
 # Synopsis: Analyze the project with PSScriptAnalyzer
 task Analyze { 
+    # Create build output folder
+    if (-not (Test-Path $psScriptAnalyzerOutputPath)) {
+        Write-Warning "Creating build output folder at '$psScriptAnalyzerOutputPath'"
+        [void] (New-Item -Path $psScriptAnalyzerOutputPath -ItemType Directory)
+    }
     $Config = New-PesterConfiguration @{
         Run        = @{
             Path = $script:psScriptAnalyzerSourcePath
@@ -58,7 +68,7 @@ task Analyze {
         TestResult = @{
             Enabled      = $true
             OutputFormat = 'NUnitXml'
-            OutputPath   = "$buildOutputPath\PSSA.xml"
+            OutputPath   = "$psScriptAnalyzerOutputPath\PSSA.xml"
         }
     }
 
@@ -83,7 +93,7 @@ task UnitTest {
         TestResult   = @{
             Enabled      = $true
             OutputFormat = 'NUnitXml'
-            OutputPath   = "$coverageOutputPath\testResults.xml"
+            OutputPath   = "$testOutputPath\testResults.xml"
         }
         CodeCoverage = @{
             Enabled        = $true
