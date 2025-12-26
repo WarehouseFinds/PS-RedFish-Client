@@ -9,9 +9,9 @@ jobs:
     permissions:
       issues: write
       pull-requests: write
+      checks: write
     name: Build and Test
     runs-on: ${{ matrix.os }}
-
     strategy:
       matrix:
         os: [ubuntu-latest] #[ubuntu-latest, windows-latest, macos-latest]
