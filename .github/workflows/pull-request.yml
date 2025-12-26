@@ -17,48 +17,24 @@ jobs:
         os: [ubuntu-latest] #[ubuntu-latest, windows-latest, macos-latest]
 
     steps:
-      #- name: Checkout
-      #  uses: actions/checkout@v4
-
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
-      - name: Install GitVersion
-        uses: gittools/actions/gitversion/setup@v4.2.0
-        with:
-          versionSpec: '6.5.x'
-          preferLatestVersion: true
-
-      - name: Determine Version
-        id: version_step # step id used as a reference for output values
-        uses: gittools/actions/gitversion/execute@v4.2.0
-        with:
-          configFilePath: gitversion.yml
-
-      - run: |
-          echo "SemVer (env.SemVer): ${{ steps.version_step.outputs.GitVersion_MajorMinorPatch }}"
-        name: Display GitVersion variables (without prefix)
-
-      - name: Ensure PowerShell modules (PSDepend, InvokeBuild, Pester, ModuleBuilder, PSScriptAnalyzer, InjectionHunter) are installed
+      - name: Ensure PowerShell modules are installed
         shell: pwsh
         run: |
           Set-StrictMode -Version Latest
           Write-Host 'Installing required modules to CurrentUser scope if missing...'
-          $modules = 'PSDepend','InvokeBuild','Pester','ModuleBuilder','PSScriptAnalyzer','InjectionHunter'
-          foreach ($m in $modules) {
-            if (-not (Get-Module -ListAvailable -Name $m)) {
-              Install-Module -Name $m -Scope CurrentUser -Force -AllowClobber -ErrorAction Stop
-            }
-          }
+          Install-Module -Name 'PSDepend' -Scope CurrentUser -Force -AllowClobber -ErrorAction Stop
+          Invoke-PSDepend -Force -Path "./requirements.psd1"
+
       - name: Run build via Invoke-Build
         shell: pwsh
         run: |
           $VerbosePreference = 'Continue'
           Set-StrictMode -Version Latest
           Import-Module InvokeBuild -ErrorAction Stop
-          Invoke-Build -ReleaseType Release -SemanticVersion ${{ steps.version_step.outputs.GitVersion_MajorMinorPatch }}
+          Invoke-Build -ReleaseType Debug
 
       - name: Run Unit Tests via Invoke-Build
         shell: pwsh

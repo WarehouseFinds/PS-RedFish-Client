@@ -33,9 +33,6 @@ task . Clean, Build
 
 # Install build dependencies
 Enter-Build {
-    # Installing dependencies
-    Invoke-PSDepend -Force -Path "./requirements.psd1"
-
     # Setting build script variables
     $script:moduleName = 'PSRedfishClient'
     $script:moduleSourcePath = Join-Path -Path $BuildRoot -ChildPath 'src'
