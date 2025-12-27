@@ -39,8 +39,8 @@ jobs:
         uses: EnricoMi/publish-unit-test-result-action@v2
         if: (!cancelled())
         with:
-          check_name: "Report: Unit Tests"
-          comment_mode: off
+          check_run: false
+          comment_mode: changes
           files: |
             test-results/**/testResults.xml
 
@@ -51,31 +51,22 @@ jobs:
           path: ${{ github.workspace }}/coverage/coverage.xml
           retention-days: 5
 
-      - name: Publish Code Coverage Results
-        uses: EnricoMi/publish-unit-test-result-action@v2
-        if: (!cancelled()) || (github.event_name == 'pull_request')
+      - name: Convert Code Coverage Report to markdown
+        uses: irongut/CodeCoverageSummary@v1.3.0
         with:
-          check_run: false
-          comment_mode: changes
-          files: |
-            coverage/coverage.xml
+          filename: coverage/coverage.xml
+          badge: true
+          fail_below_min: true
+          format: markdown
+          hide_branch_rate: false
+          hide_complexity: true
+          indicators: true
+          output: both
+          thresholds: '0 80'
 
-      # - name: Convert Code Coverage Report to markdown
-      #   uses: irongut/CodeCoverageSummary@v1.3.0
-      #   with:
-      #     filename: coverage/coverage.xml
-      #     badge: true
-      #     fail_below_min: true
-      #     format: markdown
-      #     hide_branch_rate: false
-      #     hide_complexity: true
-      #     indicators: true
-      #     output: both
-      #     thresholds: '0 80'
-
-      # - name: Add Code Coverage PR Comment
-      #   uses: marocchino/sticky-pull-request-comment@v2
-      #   if: github.event_name == 'pull_request'
-      #   with:
-      #     recreate: true
-      #     path: code-coverage-results.md
+      - name: Add Code Coverage PR Comment
+        uses: marocchino/sticky-pull-request-comment@v2
+        if: github.event_name == 'pull_request'
+        with:
+          recreate: true
+          path: code-coverage-results.md
