@@ -1,4 +1,4 @@
-name: CI - Unit Testing and Code Coverage
+name: CI - Code Quality Analysis
 
 on:
   pull_request:
@@ -10,7 +10,7 @@ jobs:
       issues: write
       pull-requests: write
       checks: write
-    name: Build and Test
+    name: Unit Tests
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:

@@ -1,4 +1,4 @@
-name: Pull Request
+name: CI -Pull Request
 
 on:
   pull_request:
@@ -10,7 +10,7 @@ jobs:
       issues: write
       pull-requests: write
       checks: write
-    name: Build and Test
+    name: Build
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
