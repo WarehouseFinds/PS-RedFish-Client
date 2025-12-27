@@ -11,6 +11,6 @@ Describe "GetModuleId Tests" {
     }
 
     It "Should throw an error for non-existing module" {
-        { GetModuleId -ModuleName "NonExistingModule" } | Should -Throw
+        { GetModuleId -ModulePath "NonExistingModule" } | Should -Throw
     }
 }
