@@ -39,7 +39,7 @@ jobs:
         uses: EnricoMi/publish-unit-test-result-action@v2
         if: (!cancelled())
         with:
-          check_run: true
+          check_run: false
           check_name: "PSScriptAnalyzer Report"
           job_summary: true
           comment_title: "PSScriptAnalyzer Report"

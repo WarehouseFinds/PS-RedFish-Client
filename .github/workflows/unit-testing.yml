@@ -40,6 +40,8 @@ jobs:
         if: (!cancelled())
         with:
           check_run: false
+          check_name: "Unit Test Results"
+          job_summary: true
           comment_title: "Unit Test Results"
           comment_mode: failures
           files: |
