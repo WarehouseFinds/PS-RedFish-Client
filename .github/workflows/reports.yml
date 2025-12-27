@@ -1,0 +1,12 @@
+name: CI - Reports
+
+on:
+  pull_request:
+    branches: [ main, master ]
+  push:
+    branches: [ main, master ]
+
+jobs:
+  reports:
+    name: Generate Reports Placeholder
+    runs-on: ubuntu-latest
