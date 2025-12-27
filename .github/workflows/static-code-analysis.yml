@@ -27,13 +27,6 @@ jobs:
           Install-Module -Name 'PSDepend' -Scope CurrentUser -Force -AllowClobber -ErrorAction Stop
           Invoke-PSDepend -Force -Path "./requirements.psd1"
 
-      - name: Run build via Invoke-Build
-        shell: pwsh
-        run: |
-          $VerbosePreference = 'Continue'
-          Set-StrictMode -Version Latest
-          Invoke-Build -ReleaseType Debug
-
       - name: Run Static Code Analysis via Invoke-Build
         shell: pwsh
         run: |
