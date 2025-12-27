@@ -46,7 +46,7 @@ jobs:
           check_name: "Report: Unit Tests"
           comment_mode: off
           files: |
-            test-results/**/*.xml
+            test-results/**/testResults.xml
 
       - name: Upload Code Coverage Report
         uses: actions/upload-artifact@v4

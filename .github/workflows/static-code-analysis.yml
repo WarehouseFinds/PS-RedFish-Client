@@ -48,4 +48,4 @@ jobs:
           check_name: "Report: Static Code Analysis"
           comment_mode: off
           files: |
-            test-results/**/*.xml
+            test-results/**/PSSA.xml
