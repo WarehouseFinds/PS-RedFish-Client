@@ -35,14 +35,28 @@ jobs:
           Set-StrictMode -Version Latest
           Invoke-Build -Task UnitTest
 
-      - name: Publish Unit Test Results
-        uses: EnricoMi/publish-unit-test-result-action@v2
-        if: (!cancelled())
+      #- name: Publish Unit Test Results
+      #  uses: EnricoMi/publish-unit-test-result-action@v2
+      #  if: (!cancelled())
+      #  with:
+      #    check_name: "Report: Unit Tests"
+      #    comment_mode: off
+      #    files: |
+      #      test-results/**/testResults.xml
+
+      - name: Test Summary
+        uses: test-summary/action@v2
         with:
-          check_name: "Report: Unit Tests"
-          comment_mode: off
-          files: |
-            test-results/**/testResults.xml
+          paths: "test-results/**/testResults.xml"
+          output: test-summary.md
+        if: always()
+
+      - name: Upload test summary
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-summary
+          path: test-summary.md
+        if: always()
 
       - name: Upload Code Coverage Report
         uses: actions/upload-artifact@v4
