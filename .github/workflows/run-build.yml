@@ -2,12 +2,22 @@ name: Build Project
 
 on:
   workflow_call:
-permissions: read-all
+    inputs:
+      module-list:
+        description: 'Comma-separated list of PowerShell modules to install and cache'
+        required: true
+        type: string
+    outputs:
+      semantic-version:
+        description: 'Semantic version determined by GitVersion'
+        value: ${{ jobs.build.outputs.semantic-version }}
 
 jobs:
   build:
-    name: Build
+    name: Build PowerShell Module
     runs-on: [ubuntu-latest]
+    outputs:
+      semantic-version: ${{ steps.version_step.outputs.GitVersion_MajorMinorPatch }}
 
     steps:
       - name: Checkout
@@ -31,12 +41,11 @@ jobs:
           echo "SemVer (env.SemVer): ${{ steps.version_step.outputs.GitVersion_MajorMinorPatch }}"
         name: Display GitVersion variables (without prefix)
 
-      - name: Ensure PowerShell modules are installed
-        shell: pwsh
-        run: |
-          Set-StrictMode -Version Latest
-          Install-Module -Name 'PSDepend' -Scope CurrentUser -Force -AllowClobber -ErrorAction Stop
-          Invoke-PSDepend -Force -Path "./requirements.psd1"
+      - name: Install and cache PowerShell modules
+        uses: potatoqualitee/psmodulecache@v6.2.1
+        with:
+          modules-to-cache: ${{ inputs['module-list'] }}  
+          updatable: true
 
       - name: Run build via Invoke-Build
         shell: pwsh
