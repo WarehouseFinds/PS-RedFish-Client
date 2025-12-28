@@ -66,5 +66,7 @@ jobs:
     name: Build
     needs: [setup]
     uses: ./.github/workflows/run-build.yml
+    permissions:
+      contents: write
     with:
       module-list: ${{ needs.setup.outputs.module-list }}
