@@ -11,8 +11,11 @@ Describe 'Injection Hunter security checks' {
         $modulePath = Resolve-Path (Join-Path $PSScriptRoot '..\..\src')
         $injectionHunterPath = (Get-Module InjectionHunter -ListAvailable).Path
     }
+    BeforeDiscovery {
+        $files = Get-ChildItem -Path $modulePath Inlcude '*.ps*1' -Exclude '*.Tests.*'
+    }
 
-    It 'contains no Injection Hunter violations' {
+    It '<_.BaseName> contains no Injection Hunter violations' -ForEach $files {
         $requestParam = @{
             Path           = $modulePath
             Recurse        = $true
