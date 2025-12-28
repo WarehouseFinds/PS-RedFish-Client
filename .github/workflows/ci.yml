@@ -52,6 +52,13 @@ jobs:
     with:
       module-list: ${{ needs.setup.outputs.module-list }}
 
+  semantic-code-analysis:
+    name: Semantic Code Analysis
+    needs: [setup]
+    uses: ./.github/workflows/run-codequality-semantic-code-analysis.yml
+    permissions:
+      security-events: write
+
   build:
     name: Build
     needs: [setup]
