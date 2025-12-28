@@ -16,6 +16,8 @@ jobs:
   build:
     name: Build PowerShell Module
     runs-on: [ubuntu-latest]
+    permissions:
+      contents: write
     outputs:
       semantic-version: ${{ steps.version_step.outputs.GitVersion_MajorMinorPatch }}
 
