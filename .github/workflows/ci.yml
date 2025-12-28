@@ -61,6 +61,7 @@ jobs:
       actions: read
       contents: read
       packages: read
+  
   build:
     name: Build
     needs: [setup]

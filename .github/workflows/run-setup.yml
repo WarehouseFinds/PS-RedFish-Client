@@ -65,3 +65,13 @@ jobs:
         with:
           modules-to-cache: ${{ steps.resolve-dependencies.outputs.module-list }}
           updatable: true
+
+      - name: Verify installed modules
+        shell: pwsh
+        run: |
+          # Verify that required modules are installed
+          $moduleRequirements = Import-PowerShellDataFile -Path './requirements.psd1'
+          $packages = @($moduleRequirements.Packages)
+          foreach ($package in $packages) {
+              Get-Module -ListAvailable -Name $package.Name -ErrorAction Stop
+          }
