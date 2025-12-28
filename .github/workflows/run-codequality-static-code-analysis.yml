@@ -25,7 +25,8 @@ jobs:
         uses: potatoqualitee/psmodulecache@v6.2.1
         with:
           modules-to-cache: ${{ inputs['module-list'] }}  
-          updatable: true
+          shell: pwsh
+          updatable: false
 
       - name: Run Static Code Analysis via Invoke-Build
         shell: pwsh
