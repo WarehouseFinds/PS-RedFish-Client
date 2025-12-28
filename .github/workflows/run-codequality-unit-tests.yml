@@ -39,7 +39,7 @@ jobs:
         if: (!cancelled())
         with:
           check_run: true
-          check_name: Reports / Unit Test Report
+          check_name: ">> Report: Unit Tests"
           check_run_annotations	: all tests, skipped tests
           job_summary: true
           comment_title:  Unit Test Report
@@ -70,7 +70,7 @@ jobs:
 
       - name: Add Code Coverage PR Comment
         uses: marocchino/sticky-pull-request-comment@v2
-        if: github.event_name == 'pull_request'
+        if: (github.event_name == 'pull_request')
         with:
           header: 'Code Coverage Report'
           recreate: true

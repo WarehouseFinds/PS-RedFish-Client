@@ -39,7 +39,7 @@ jobs:
         if: (!cancelled())
         with:
           check_run: true
-          check_name: Reports / PSScriptAnalyzer Report
+          check_name: ">> Report: PSScriptAnalyzer"
           check_run_annotations	: all tests, skipped tests
           job_summary: true
           comment_title: PSScriptAnalyzer Report

@@ -3,8 +3,6 @@
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '',
     Justification = 'Suppress false positives in Pester code blocks')]
 param(
-    [System.IO.DirectoryInfo]
-    $SourcePath
 )
 
 BeforeDiscovery {
@@ -14,10 +12,10 @@ BeforeDiscovery {
     # Dynamically defining the functions to analyze
     $functionPaths = @()
     if (Test-Path -Path "$modulePath\Private\*.ps1") {
-        $functionPaths += Get-ChildItem -Path "$modulePath\Private\*.ps1" -Exclude "*.Tests.*"
+        $functionPaths += Get-ChildItem -Path "$modulePath\Private\*.ps1" -Exclude '*.Tests.*'
     }
     if (Test-Path -Path "$modulePath\Public\*.ps1") {
-        $functionPaths += Get-ChildItem -Path "$modulePath\Public\*.ps1" -Exclude "*.Tests.*"
+        $functionPaths += Get-ChildItem -Path "$modulePath\Public\*.ps1" -Exclude '*.Tests.*'
     }
 }
 
@@ -26,7 +24,7 @@ Describe "'<_>' Function Analysis with PSScriptAnalyzer" -ForEach $functionPaths
         $functionName = $_.BaseName
         $functionPath = $_
     }
-    
+
     Context 'Standard Rules' {
         # Define PSScriptAnalyzer rules
         $scriptAnalyzerRules = Get-ScriptAnalyzerRule # Just getting all default rules

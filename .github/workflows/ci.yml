@@ -24,6 +24,8 @@ on:
   pull_request:
     branches:
       - main
+      - 'release/**'
+      - 'hotfix/**'
 
 jobs:
   setup:
@@ -64,7 +66,7 @@ jobs:
   
   build:
     name: Build
-    needs: [setup]
+    needs: [setup, unit-tests, static-code-analysis, semantic-code-analysis]
     uses: ./.github/workflows/run-build.yml
     permissions:
       contents: write

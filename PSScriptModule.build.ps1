@@ -43,7 +43,6 @@ Enter-Build {
     $script:nuspecPath = Join-Path -Path $moduleSourcePath -ChildPath "$moduleName.nuspec"
     $script:buildOutputPath = Join-Path -Path $BuildRoot -ChildPath 'build'
     $script:publishSourcePath = Join-Path -Path $buildOutputPath -ChildPath $moduleName
-    $script:coverageOutputPath = Join-Path -Path $BuildRoot -ChildPath 'coverage'
     $script:psScriptAnalyzerSourcePath = Join-Path -Path $BuildRoot -ChildPath './tests/SCA/PSScriptAnalyzer.Tests.ps1'
     $script:psScriptAnalyzerOutputPath = Join-Path -Path $testOutputPath -ChildPath 'SCA'
     $script:unitTestSourcePath = Join-Path -Path $BuildRoot -ChildPath './tests/Unit'
@@ -57,8 +56,7 @@ Enter-Build {
 # Synopsis: Analyze the project with PSScriptAnalyzer
 task Analyze {
     # Create build output folder
-    if (-not (Test-Path $psScriptAnalyzerOutputPath))
-    {
+    if (-not (Test-Path $psScriptAnalyzerOutputPath)) {
         Write-Warning "Creating build output folder at '$psScriptAnalyzerOutputPath'"
         [void] (New-Item -Path $psScriptAnalyzerOutputPath -ItemType Directory)
     }
@@ -112,14 +110,12 @@ task UnitTest {
 # Build the project
 task Build Clean, {
     # Warning on local builds
-    if ($ReleaseType -ne 'Release')
-    {
+    if ($ReleaseType -ne 'Release') {
         Write-Warning 'THIS IS A DEBUG BUILD. THE MODULE IS NOT SUITABLE FOR PRODUCTION USE.'
     }
 
     # Create build output folder
-    if (-not (Test-Path $buildOutputPath))
-    {
+    if (-not (Test-Path $buildOutputPath)) {
         Write-Warning "Creating build output folder at '$buildOutputPath'"
         [void] (New-Item -Path $buildOutputPath -ItemType Directory)
     }
@@ -148,8 +144,7 @@ task Publish -If ($NugetApiKey) {
 
 # Clean up the target build directory
 task Clean {
-    if (Test-Path $buildOutputPath)
-    {
+    if (Test-Path $buildOutputPath) {
         Write-Warning "Removing build output folder at '$buildOutputPath'"
         $requestParam = @{
             Path    = $buildOutputPath
