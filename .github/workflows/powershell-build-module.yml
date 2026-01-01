@@ -66,7 +66,7 @@ jobs:
             'workflow_dispatch' { $value = 'Release' }
             'push' {
               if ('${{ github.ref_name }}' -eq 'main') {
-                $value = 'PreRelease'
+                $value = 'Prerelease'
               } else {
                 $value = 'Debug'
               }
@@ -85,7 +85,7 @@ jobs:
               SemanticVersion = '${{ steps.version_step.outputs.semVer }}'
               Task            = 'Build'
           }
-          [void] (Invoke-Build @requestParam)
+          Invoke-Build @requestParam
 
       - name: Run Export-CommandHelp via Invoke-Build
         shell: pwsh
@@ -100,7 +100,7 @@ jobs:
               SemanticVersion = '${{ steps.version_step.outputs.semVer }}'
               Task            = 'Export-CommandHelp'
           }
-          [void] (Invoke-Build @requestParam)
+          Invoke-Build @requestParam
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f #v6
