@@ -147,6 +147,8 @@ jobs:
           $body = @"
           $($result.body)
           "@
+          Write-Output "$requestParams"
+          Write-Output $body
           Write-Output "releaseNotes=$body" >> $env:GITHUB_OUTPUT
 
       - name: Create Release
