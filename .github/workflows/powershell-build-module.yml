@@ -127,12 +127,15 @@ jobs:
         run: |
           $VerbosePreference = 'Continue'
           git fetch --tags
+          $previousTag = git tag --sort=-v:refname |
+            Where-Object { $_ -match '^v?\d+\.\d+\.\d+' } |
+            Select-Object -Skip 1 -First 1
           $uri = "https://api.github.com/repos/${{ github.repository }}/releases/generate-notes"
 
           $body = @{
             tag_name = 'v${{ env.majorMinorPatch }}'
             target_commitish = "main"
-            previous_tag_name = git describe --tags --abbrev=0 HEAD^
+            previous_tag_name = $previousTag
           } | ConvertTo-Json
 
           $requestParams = @{
@@ -148,7 +151,7 @@ jobs:
           $body = @"
           $($result.body)
           "@
-          Write-Verbose $requestParams.previous_tag_name
+          Write-Verbose $previousTag
           Write-Verbose $body
           Write-Verbose $result.body
           Write-Output "releaseNotes=$body" >> $env:GITHUB_OUTPUT
