@@ -1,5 +1,5 @@
 name: CI
-run-name: CI Workflow • ${{ github.repository }} • ${{ github.event_name }} • ${{ github.ref_name }}
+run-name: CI Workflow • ${{ github.event.repository.name }} • ${{ github.event_name }} • ${{ github.ref_name }}
 permissions: read-all
 
 on:
