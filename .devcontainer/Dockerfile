@@ -32,5 +32,15 @@ RUN apt-get update \
 # Update CA certificates
 RUN update-ca-certificates
 
+# Create vscode user with sudo privileges
+RUN groupadd --gid 1000 vscode \
+    && useradd --uid 1000 --gid vscode --shell /bin/bash --create-home vscode \
+    && apt-get update \
+    && apt-get install -y sudo \
+    && echo vscode ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/vscode \
+    && chmod 0440 /etc/sudoers.d/vscode \
+    && apt-get clean -y \
+    && rm -rf /var/lib/apt/lists/*
+
 # Switch back to dialog for any ad-hoc use of apt-get
 ENV DEBIAN_FRONTEND=dialog
