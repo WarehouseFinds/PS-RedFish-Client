@@ -9,7 +9,7 @@ on:
       - main
     paths:
       - 'src/**'
-      - 'tests/**'
+
   pull_request:
     branches:
       - main
@@ -24,27 +24,12 @@ on:
 
 jobs:
   changes:
-    name: Detect Changes
+    name: Label Changes
     runs-on: [ubuntu-latest]
-    outputs:
-      src: ${{ steps.filter.outputs.src }}
-      github: ${{ steps.filter.outputs.github }}
-      build: ${{ steps.filter.outputs.build }}
-      docs: ${{ steps.filter.outputs.docs }}
+    if: github.event_name == 'pull_request'
     steps:
       - name: Checkout repository
         uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 #v6.01
-        with:
-          repository: ${{ github.repository }}
-
-      - uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36 #v3.0.2
-        id: filter
-        with:
-          filters: |
-            src:
-              - 'src/**'
-            tests:
-              - 'tests/**'
 
       - name: Execute assign PR labels
         id: action-assign-labels
@@ -54,14 +39,10 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           conventional-commits: '.github/labeler.yml'
           apply-changes: true
-        if: github.event_name == 'pull_request'
 
   setup:
     name: Setup
     uses: WarehouseFinds/PSScriptModule/.github/workflows/powershell-script-module-cache-dependencies.yml@main
-    if: > 
-      needs.changes.outputs.src == 'true' ||
-      needs.changes.outputs.tests == 'true'
 
   unit-tests:
     name: Unit Tests
@@ -73,7 +54,6 @@ jobs:
       checks: write
     with:
       module-list: ${{ needs.setup.outputs.module-list }}
-    if: needs.changes.outputs.src == 'true'
 
   static-code-analysis:
     name: Static Code Analysis
@@ -85,9 +65,6 @@ jobs:
       checks: write
     with:
       module-list: ${{ needs.setup.outputs.module-list }}
-    if: > 
-      needs.changes.outputs.src == 'true' ||
-      needs.changes.outputs.tests == 'true'
 
   code-injection:
     name: Code Injection
@@ -99,9 +76,6 @@ jobs:
       checks: write
     with:
       module-list: ${{ needs.setup.outputs.module-list }}
-    if: > 
-      needs.changes.outputs.src == 'true' ||
-      needs.changes.outputs.tests == 'true'
 
   semantic-code-analysis:
     name: Semantic Code Analysis
@@ -112,8 +86,6 @@ jobs:
       actions: read
       contents: read
       packages: read
-    if: needs.changes.outputs.src == 'true'
-
 
   build:
     name: Build
@@ -124,6 +96,3 @@ jobs:
     with:
       release-type: 'Debug'
       module-list: ${{ needs.setup.outputs.module-list }}
-    if: >
-      needs.unit-tests.result == 'skipped' ||
-      needs.unit-tests.result == 'success'
