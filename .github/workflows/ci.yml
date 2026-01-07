@@ -54,6 +54,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           conventional-commits: '.github/labeler.yml'
           apply-changes: true
+        if: github.event_name == 'pull_request'
 
   setup:
     name: Setup
