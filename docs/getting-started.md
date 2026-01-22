@@ -133,7 +133,11 @@ Edit `src/YourModuleName.psd1`:
     Description = 'Detailed description of what your module does'
     
     # Add relevant tags for PowerShell Gallery
-    Tags = @('PowerShell', 'Automation', 'DevOps')
+    PrivateData = @{
+        PSData = @{
+            Tags = @('PowerShell', 'Automation', 'DevOps')
+        }
+    }
     
     # Set your project URLs
     ProjectUri = 'https://github.com/YourUsername/YourModuleName'
