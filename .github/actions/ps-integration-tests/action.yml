@@ -7,18 +7,6 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Checkout repository
-      uses: actions/checkout@v6
-      with:
-        repository: ${{ github.repository }}
-
-    - name: Install and cache PowerShell modules
-      uses: potatoqualitee/psmodulecache@ee5e9494714abf56f6efbfa51527b2aec5c761b8 #v6.2.1
-      with:
-        modules-to-cache: ${{ inputs.module-list }}
-        shell: pwsh
-        updatable: false
-
     - name: Run Integration Tests via Invoke-Build
       shell: pwsh
       run: |
