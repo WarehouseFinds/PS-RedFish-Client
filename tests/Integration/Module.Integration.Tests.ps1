@@ -51,13 +51,17 @@ Describe 'PSScriptModule Integration Tests' -Tag 'Integration' {
             $exportedCommands = $module.ExportedCommands.Keys
 
             # Discover public functions from source
-            $publicFunctionsPath = Resolve-Path -Path (Join-Path -Path $PSScriptRoot -ChildPath '../../src/Public')
+            $publicFunctionsPath = Resolve-Path -Path (Join-Path -Path $PSScriptRoot -ChildPath '../../src/Public/')
             $publicFunctionFiles = Get-ChildItem -Path $publicFunctionsPath -Include '*.ps1' -Exclude '*.Tests.ps1' -Recurse |
             Select-Object -ExpandProperty BaseName
         }
 
         It 'Should export at least one function' {
             $exportedCommands.Count | Should -BeGreaterThan 0
+        }
+
+        It 'Public function files' {
+            $publicFunctionFiles | Should -Be 1
         }
 
         It 'Should discover public functions from src/Public' {
