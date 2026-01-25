@@ -52,8 +52,8 @@ Describe 'PSScriptModule Integration Tests' -Tag 'Integration' {
 
             # Discover public functions from source
             $publicFunctionsPath = Resolve-Path -Path (Join-Path -Path $PSScriptRoot -ChildPath '../../src/Public/')
-            $publicFunctionFiles = Get-ChildItem -Path $publicFunctionsPath -Include '*.ps1' -Exclude '*.Tests.ps1' -Recurse |
-            Select-Object -ExpandProperty BaseName
+            $publicFunctionFiles = @(Get-ChildItem -Path $publicFunctionsPath -Include '*.ps1' -Exclude '*.Tests.ps1' -Recurse |
+                Select-Object -ExpandProperty BaseName)
         }
 
         It 'Should export at least one function' {
@@ -61,7 +61,7 @@ Describe 'PSScriptModule Integration Tests' -Tag 'Integration' {
         }
 
         It 'Public function files' {
-            $publicFunctionFiles | Should -Be 1
+            $publicFunctionFiles | Should -HaveCount 1 -Because 'The template ships with a single public function'
         }
 
         It 'Should discover public functions from src/Public' {
