@@ -101,6 +101,40 @@ task Invoke-UnitTests {
     Invoke-Pester -Configuration $config -Verbose
 }
 
+# Synopsis: Run integration tests on built module
+task Invoke-IntegrationTests {
+    if (-not (Test-Path $testOutputPath)) {
+        [void] (New-Item -Path $testOutputPath -ItemType Directory)
+    }
+
+    $integrationTestPath = Join-Path -Path $testSourcePath -ChildPath 'Integration'
+    if (-not (Test-Path $integrationTestPath)) {
+        Write-Warning "No integration tests found at '$integrationTestPath'"
+        return
+    }
+
+    $config = New-PesterConfiguration @{
+        Run        = @{
+            Path     = $integrationTestPath
+            PassThru = $true
+            Exit     = $true
+        }
+        TestResult = @{
+            Enabled      = $true
+            OutputFormat = 'NUnitXml'
+            OutputPath   = "$testOutputPath\integration-tests.xml"
+        }
+        Filter     = @{
+            Tag = 'Integration'
+        }
+        Output     = @{
+            Verbosity = 'Detailed'
+        }
+    }
+
+    Invoke-Pester -Configuration $config
+}
+
 # Synopsis: Run all tests
 task Test Invoke-UnitTests, Invoke-PSScriptAnalyzer, Invoke-InjectionHunter
 
