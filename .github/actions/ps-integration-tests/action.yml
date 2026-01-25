@@ -1,0 +1,27 @@
+name: Run Integration Tests
+description: Execute integration tests on built module and publish results
+inputs:
+  module-list:
+    description: Comma-separated list of PowerShell modules to cache
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Run Integration Tests via Invoke-Build
+      shell: pwsh
+      run: |
+        Set-StrictMode -Version Latest
+        Invoke-Build -Task Invoke-IntegrationTests
+
+    - name: Publish Integration Test Results
+      uses: EnricoMi/publish-unit-test-result-action@27d65e188ec43221b20d26de30f4892fad91df2f #v2.22.0
+      if: (!cancelled())
+      with:
+        check_run: false
+        check_name: ">> Report: Integration Tests"
+        check_run_annotations: all tests, skipped tests
+        job_summary: true
+        comment_title: Integration Test Report
+        comment_mode: off
+        files: |
+          test-results/integration-tests.xml

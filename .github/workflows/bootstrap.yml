@@ -145,6 +145,11 @@ jobs:
           MODULE_NAME=${{ github.event.repository.name }}
           sed -i "s/PSScriptModule/$MODULE_NAME/g" .devcontainer/devcontainer.json
 
+      - name: Update integration test file
+        run: |
+          MODULE_NAME=${{ github.event.repository.name }}
+          sed -i "s/PSScriptModule/$MODULE_NAME/g" tests/Integration/Module.Integration.Tests.ps1
+
       - name: Remove this workflow file
         run: |
           rm .github/workflows/bootstrap.yml

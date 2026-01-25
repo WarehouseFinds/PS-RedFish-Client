@@ -6,6 +6,7 @@
     Copyright         = '(c) Warehouse Finds'
     Description       = 'A production-ready PowerShell script module template designed to streamline the creation, testing, and delivery of PowerShell modules.'
     RootModule        = 'PSScriptModule.psm1'
+    PowerShellVersion = '7.1'
     FunctionsToExport = @()
     CmdletsToExport   = @()
     VariablesToExport = @()
